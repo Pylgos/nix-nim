@@ -1,0 +1,127 @@
+{
+  "nodes": {
+    "flake-utils": {
+      "locked": {
+        "lastModified": 1667395993,
+        "narHash": "sha256-nuEHfE/LcWyuSWnS8t12N1wc105Qtau+/OdUAjtQ0rA=",
+        "owner": "numtide",
+        "repo": "flake-utils",
+        "rev": "5aed5285a952e0b949eb3ba02c12fa4fcfef535f",
+        "type": "github"
+      },
+      "original": {
+        "owner": "numtide",
+        "repo": "flake-utils",
+        "type": "github"
+      }
+    },
+    "nim-bootstrap-source": {
+      "flake": false,
+      "locked": {
+        "narHash": "sha256-WCsDQJEtHe9ZWrf0dAP1IXeSN0gkwyeOdRkvASa3moY=",
+        "type": "tarball",
+        "url": "https://nim-lang.org/download/nim-1.6.10-linux_x64.tar.xz"
+      },
+      "original": {
+        "type": "tarball",
+        "url": "https://nim-lang.org/download/nim-1.6.10-linux_x64.tar.xz"
+      }
+    },
+    "nim-devel-source": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1675977545,
+        "narHash": "sha256-BFYjSr3Gl3LxDUtwmxmk28d7r2TT1Aw1phYqJDOOAP8=",
+        "owner": "nim-lang",
+        "repo": "Nim",
+        "rev": "642136ec4f2cd93cdd753bf16fa4aec89b8fee82",
+        "type": "github"
+      },
+      "original": {
+        "owner": "nim-lang",
+        "ref": "devel",
+        "repo": "Nim",
+        "type": "github"
+      }
+    },
+    "nim-stable-source": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1668957715,
+        "narHash": "sha256-wXQgpXPTIKDohCFIj1Et6AZYwwkFD/TLcUqBd6bbAUs=",
+        "owner": "nim-lang",
+        "repo": "Nim",
+        "rev": "f1519259f85cbdf2d5ff617c6a5534fcd2ff6942",
+        "type": "github"
+      },
+      "original": {
+        "owner": "nim-lang",
+        "ref": "v1.6.10",
+        "repo": "Nim",
+        "type": "github"
+      }
+    },
+    "nimble-latest-source": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1675177883,
+        "narHash": "sha256-tS9vtvuRBcuVsF1JCH1Ir6+9L2v9pnWr2GyPIkgp7V4=",
+        "owner": "nim-lang",
+        "repo": "nimble",
+        "rev": "c701d6e7905dfe084e58efffc8493bfb22842295",
+        "type": "github"
+      },
+      "original": {
+        "owner": "nim-lang",
+        "repo": "nimble",
+        "type": "github"
+      }
+    },
+    "nimble-source": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1671195186,
+        "narHash": "sha256-saf+plIlx054pBfbhD2tzT/QGsfQTBcbWdmJue/m0TM=",
+        "owner": "nim-lang",
+        "repo": "nimble",
+        "rev": "afd03bc000f4013c48f52381728327dabfccfc4c",
+        "type": "github"
+      },
+      "original": {
+        "owner": "nim-lang",
+        "ref": "v0.14.1",
+        "repo": "nimble",
+        "type": "github"
+      }
+    },
+    "nixpkgs": {
+      "locked": {
+        "lastModified": 1675940568,
+        "narHash": "sha256-epG6pOT9V0kS+FUqd7R6/CWkgnZx2DMT5Veqo+y6G3c=",
+        "owner": "NixOS",
+        "repo": "nixpkgs",
+        "rev": "6ccc4a59c3f1b56d039d93da52696633e641bc71",
+        "type": "github"
+      },
+      "original": {
+        "owner": "NixOS",
+        "ref": "nixpkgs-unstable",
+        "repo": "nixpkgs",
+        "type": "github"
+      }
+    },
+    "root": {
+      "inputs": {
+        "flake-utils": "flake-utils",
+        "nim-bootstrap-source": "nim-bootstrap-source",
+        "nim-devel-source": "nim-devel-source",
+        "nim-stable-source": "nim-stable-source",
+        "nimble-latest-source": "nimble-latest-source",
+        "nimble-source": "nimble-source",
+        "nixpkgs": "nixpkgs"
+      }
+    }
+  },
+  "root": "root",
+  "version": 7
+}

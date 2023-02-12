@@ -343,9 +343,9 @@ in
 rec {
   nim-stable = stable.nim-wrapped;
   nim-stable-unwrapped = stable.nim-unwrapped;
-  nim-stable-nimble = stable.nimble-unwrapped;
+  nim-stable-nimble = stable.nimble;
 
   nim-devel = devel.nim-wrapped;
   nim-devel-unwrapped = devel.nim-unwrapped;
-  nim-devel-nimble = devel.nimble-unwrapped;
+  nim-devel-nimble = devel.nimble;
 }

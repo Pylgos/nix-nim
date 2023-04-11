@@ -4,7 +4,7 @@
 , nimble
 , lib
 , git
-, unixtools
+, jq
 , cacert
 , breakpointHook
 }:
@@ -23,7 +23,7 @@ let
     outputHashMode = "recursive";
     lockFile = src + "/nimble.lock";
     nimbleFile = src + "/${nimbleFileName}";
-    nativeBuildInputs = [ git nimble nim unixtools.ping ];
+    nativeBuildInputs = [ git nimble nim ];
     GIT_SSL_CAINFO = "${cacert}/etc/ssl/certs/ca-bundle.crt";
     impureEnvVars = lib.fetchers.proxyImpureEnvVars ++ [
       "GIT_PROXY_COMMAND" "NIX_GIT_SSL_CAINFO" "SOCKS_SERVER"
@@ -38,7 +38,7 @@ let
 in
 stdenv.mkDerivation (args // {
   depsBuildBuild = [ nim ];
-  nativeBuildInputs = [ nimble ];
+  nativeBuildInputs = [ nimble jq ];
 
   buildPhase = ''
     nimbledeps=/tmp/nimbledeps
@@ -55,6 +55,11 @@ stdenv.mkDerivation (args // {
       if [[ ! -L $pkg ]]; then
         cp -a $pkg $out
       fi
-    done 
+    done
+
+    for binName in $(cat $out/nimblemeta.json | jq -r '.metaData.binaries[]'); do
+      mkdir -p $out/bin
+      ln -s "$out/$binName" "$out/bin" 
+    done
   '';
 })

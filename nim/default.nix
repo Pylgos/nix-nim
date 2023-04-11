@@ -11,4 +11,5 @@ let
 in
 rec {
   nim-devel = devel.nim-wrapped;
+  nim-devel-clang = devel.nim-wrapped.override (old: { stdenv = nixpkgs.clangStdenv; });
 }

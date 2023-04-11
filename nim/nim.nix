@@ -83,16 +83,15 @@ let
     os = parseOs p;
   };
 
-  parseNimVersion = src: "idk";
-  parseNimbleVersion = src: "idk";
+  parseNimVersion = src: src.shortRev;
+  parseNimbleVersion = src: src.shortRev;
 
   nimHost = parsePlatform stdenv.hostPlatform;
   nimTarget = parsePlatform stdenv.targetPlatform;
 in
 {
   nim-bootstrap = stdenv.mkDerivation {
-    pname = "nim-bootstrap";
-    version = "1.6.10";
+    name = "nim-bootstrap";
     src = bootstrap-source;
 
     installPhase = ''
@@ -111,7 +110,6 @@ in
       buildInputs = [ boehmgc openssl pcre readline sqlite ];
 
       patches = [
-        ./NIM_CONFIG_DIR.patch
         ./nixbuild.patch
       ];
 
@@ -164,11 +162,6 @@ in
 
     nativeBuildInputs = [ makeWrapper ];
 
-    patches = [
-      ./nim.cfg.patch
-      # Remove configurations that clash with ours
-    ];
-
     unpackPhase = ''
       runHook preUnpack
       cp -r ${nim-bootstrap.src}/config /build/config
@@ -198,31 +191,10 @@ in
         elif cc.contains("clang"):
           switch("cc", "clang")
         WTF
-        mv config/nim.cfg config/nim.cfg.old
-        cat > config/nim.cfg << WTF
-        os = "${nimTarget.os}"
-        cpu =  "${nimTarget.cpu}"
-        define:"nixbuild"
-        WTF
-        cat >> config/nim.cfg < config/nim.cfg.old
-        rm config/nim.cfg.old
-        cat >> config/nim.cfg << WTF
-        clang.cpp.exe %= "\$CXX"
-        clang.cpp.linkerexe %= "\$CXX"
-        clang.exe %= "\$CC"
-        clang.linkerexe %= "\$CC"
-        gcc.cpp.exe %= "\$CXX"
-        gcc.cpp.linkerexe %= "\$CXX"
-        gcc.exe %= "\$CC"
-        gcc.linkerexe %= "\$CC"
-        WTF
-        runHook postBuild
       '';
 
-    wrapperArgs = [
-      "--prefix PATH : ${lib.makeBinPath [ buildPackages.gdb ]}:${
-      placeholder "out"
-    }/bin"
+    wrapperArgs = lib.optionals (!(stdenv.isDarwin && stdenv.isAarch64)) [
+      "--prefix PATH : ${lib.makeBinPath [ buildPackages.gdb ]}:${placeholder "out"}/bin"
       # Used by nim-gdb
 
       "--prefix LD_LIBRARY_PATH : ${lib.makeLibraryPath [ openssl pcre ]}"
@@ -246,36 +218,35 @@ in
 
         mkdir -p $out/nim
         cp -r config $out/nim/config
+
         ln -s ${nim-unwrapped}/nim/compiler $out/nim/compiler
         ln -s ${nim-unwrapped}/nim/lib $out/nim/lib
         ln -s ${nim-unwrapped}/nim/nim.nimble $out/nim/nim.nimble
         ln -s $out/nim/bin $out/bin
 
-        for binpath in ${nim-unwrapped}/nim/bin/nim?*; do
-          local binname=`basename $binpath`
-          makeWrapper \
-            $binpath $out/nim/bin/${config}-$binname \
-            $wrapperArgs
-          ln -s $out/nim/bin/${config}-$binname $out/nim/bin/$binname
+        cp -a ${nim-unwrapped}/nim/bin $out/nim/bin
+        chmod +w $out/nim/bin
+
+        binpath_list=$(echo $out/nim/bin/nim?*)
+        for binpath in $binpath_list; do
+          local binname=$(basename $binpath)
+          wrapProgram $binpath $wrapperArgs
+          ln -s $binpath $out/nim/bin/${config}-$binname
         done
 
-        makeWrapper \
-          ${nim-unwrapped}/nim/bin/nim $out/nim/bin/${config}-nim \
+        wrapProgram $out/nim/bin/nim \
           --set-default CC $(command -v $CC) \
           --set-default CXX $(command -v $CXX) \
           $wrapperArgs
-        
-        ln -s $out/nim/bin/${config}-nim $out/nim/bin/nim
+        ln -s $out/nim/bin/nim $out/nim/bin/${config}-nim 
+
+        wrapProgram $out/nim/bin/testament $wrapperArgs
+        ln -s $out/nim/bin/testament $out/nim/bin/${config}-testament 
 
         makeWrapper \
-          ${nim-unwrapped}/nim/bin/testament $out/nim/bin/${config}-testament \
-          $wrapperArgs
-        ln -s $out/nim/bin/${config}-testament $out/nim/bin/testament
-
-        makeWrapper \
-          ${nimble}/bin/nimble $out/nim/bin/${config}-nimble \
+          ${nimble}/bin/nimble $out/nim/bin/nimble \
           --suffix PATH : $out/bin
-        ln -s $out/nim/bin/${config}-nimble $out/nim/bin/nimble
+        ln -s $out/nim/bin/nimble $out/nim/bin/${config}-nimble
 
         runHook postInstall
       '';
